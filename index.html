@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Horarios IENC — San Nicolás · Variación</title>
+<style>
+:root{
+  --blue:#2554e0; --blue-dark:#1f46c4;
+  --ink:#20242C; --ink-2:#6B7280; --ink-3:#9AA3B2;
+  --paper:#F3F4F6; --card:#FFFFFF; --line:#E3E6EB;
+  --link:#2554e0;
+  --amber-soft:#FDF0DC; --amber:#B26A00;
+  --rose-soft:#FBE3E9; --rose:#B12F4E;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.4;
+}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 56px}
+
+/* ---------- header ---------- */
+header{background:var(--blue);color:#fff;text-align:center}
+.hd{max-width:1100px;margin:0 auto;padding:26px 16px 0}
+h1{font-weight:800;font-size:clamp(22px,4.6vw,30px);margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:#DCE4FF;font-size:15px;margin:0 0 20px}
+
+/* tabs */
+nav{display:flex;justify-content:center;gap:26px;overflow-x:auto;background:#fff;
+    border-bottom:1px solid var(--line)}
+nav button{
+  appearance:none;border:0;background:none;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:16px;color:var(--ink-3);
+  padding:14px 2px 12px;border-bottom:3px solid transparent;white-space:nowrap
+}
+nav button[aria-selected="true"]{color:var(--blue);border-bottom-color:var(--blue)}
+nav button:hover{color:var(--ink)}
+nav button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- controls ---------- */
+.controls{background:#fff;padding:18px 0 8px}
+.ctl-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+label.fld{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+label.fld span{font-weight:700;font-size:16px;color:var(--ink)}
+label.fld.grow{flex:1 1 220px}
+select{
+  font-size:17px;color:var(--ink);background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232554e0' width='18' height='18'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center;
+  border:2px solid var(--blue);border-radius:12px;padding:9px 38px 9px 14px;
+  min-width:150px;appearance:none;font-weight:600
+}
+select:focus{outline:none;border-color:var(--blue-dark);box-shadow:0 0 0 3px #2554e022}
+input[type=search]{
+  font-size:15px;color:var(--ink);background:#fff;border:1.5px solid var(--line);
+  border-radius:10px;padding:8px 12px;width:100%
+}
+input[type=search]:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+
+/* ---------- grid ---------- */
+.gridwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:16px;
+  border:1px solid var(--line);border-radius:var(--r);background:#fff}
+table{border-collapse:collapse;width:100%;min-width:680px}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+th:last-child,td:last-child{border-right:0}
+tr:last-child td{border-bottom:0}
+thead th{
+  background:#F7F8FA;font-weight:700;font-size:15px;color:var(--ink);
+  padding:12px 14px;text-align:left
+}
+th.hcol{width:70px;background:#F7F8FA;font-weight:700;text-align:left;padding:12px 14px}
+td{padding:0;vertical-align:top}
+.cell{padding:12px 14px}
+.cell .mat{font-weight:700;font-size:16px;color:var(--ink);margin:0 0 3px}
+.cell .doc{color:var(--ink-2);font-size:14.5px;margin:0 0 3px}
+.cell .room{color:var(--link);font-weight:600;font-size:14.5px}
+tr.brk td{background:#F7F8FA;color:var(--ink-3);text-align:center;padding:10px;font-weight:600}
+td.free .cell{color:var(--ink-3)}
+td.free .cell:before{content:"—"}
+td.gap{background:var(--rose-soft)}
+td.gap .mat{color:var(--rose)}
+td.act .cell{background:var(--amber-soft)}
+mark{background:#FDE68A;padding:0 2px;border-radius:3px}
+
+/* ---------- meta ---------- */
+.meta{display:flex;gap:22px;flex-wrap:wrap;margin:16px 2px 0}
+.meta div{display:flex;flex-direction:column}
+.meta .k{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.meta .v{font-weight:800;font-size:19px}
+
+/* ---------- occupancy (aulas: all) ---------- */
+.occ{border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden;margin-top:16px}
+.occ table{min-width:640px}
+.occ .oc{padding:8px 10px;font-size:12.5px}
+.occ .oc b{font-size:13.5px}
+.occ .oc span{color:var(--ink-3);font-size:11px;display:block}
+td.busy{background:#F7F8FA}
+td.libre .oc{color:var(--ink-3);font-size:11.5px}
+
+.note{background:var(--amber-soft);border:1px solid #EBCB96;border-left:4px solid var(--amber);
+  border-radius:8px;padding:12px 14px;margin:16px 0 0;font-size:13.5px;color:#5C3A00}
+footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:11.5px;color:var(--ink-3);line-height:1.7}
+
+@media (max-width:760px){
+  table,thead,tbody,th,td,tr{display:block}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{border-bottom:8px solid var(--paper)}
+  th.hcol{background:var(--blue);color:#fff;font-size:13px;text-transform:uppercase;
+    border-right:0;padding:8px 14px}
+  td{border-right:0}
+  td:before{content:attr(data-h);display:block;font-size:11px;color:var(--ink-3);
+    font-weight:700;padding:8px 14px 0}
+  td.free{display:none}
+  tr.brk{display:none}
+  .occ table{min-width:0}
+}
+@media print{header,nav,.controls,footer{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <h1>Horarios IENC — San Nicolás</h1>
+    <p class="sub">Jornada Mañana · Variación por novedad · 2026</p>
+    <nav role="tablist">
+      <button role="tab" id="t-doc" aria-selected="false" aria-controls="p-doc">Docente</button>
+      <button role="tab" id="t-curso" aria-selected="true" aria-controls="p-curso">Curso</button>
+      <button role="tab" id="t-aula" aria-selected="false" aria-controls="p-aula">Salón</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="ctl-row">
+      <label class="fld"><span id="sel-lbl">Curso:</span>
+        <select id="sel"></select>
+      </label>
+      <label class="fld grow"><span style="font-size:13px;color:var(--ink-3);font-weight:600">Buscar</span>
+        <input type="search" id="q" placeholder="docente, materia o aula" autocomplete="off">
+      </label>
+    </div>
+  </div>
+
+  <div class="meta" id="meta"></div>
+  <div id="panel"></div>
+
+  <footer>
+    Reemplazo activo durante la novedad de Sociales: <b>Eliana Díaz</b> y <b>Jimmy Castro</b>.<br>
+    Este horario es independiente del horario habitual; al finalizar la novedad se vuelve a la versión anterior.
+  </footer>
+</div>
+
+<script src="horarios-data-v2.js"></script>
+<script>
+(function(){
+  var D = window.HORARIO_V2;
+  var REPL = ["Eliana Diaz","Jimmy Castro"];
+  var DAYS = ["Lun","Mar","Mié","Jue","Vie"];
+  var DAYNAME = {Lun:"Lunes",Mar:"Martes","Mié":"Miércoles",Jue:"Jueves",Vie:"Viernes"};
+  var HOURS = ["1°","2°","3°","4°","5°","6°"];
+  var HORA = {"1°":"6:00–6:55","2°":"6:55–7:50","3°":"7:50–8:45","4°":"8:45–9:40",
+              "5°":"10:20–11:10","6°":"11:10–12:00"};
+
+  var byCurso={}, byDoc={}, byAula={};
+  D.recs.forEach(function(r){
+    (byCurso[r.c]=byCurso[r.c]||[]).push(r);
+    (byDoc[r.d]=byDoc[r.d]||[]).push(r);
+    (byAula[r.a]=byAula[r.a]||[]).push(r);
+  });
+  var actByDoc={};
+  D.acts.forEach(function(a){ (actByDoc[a.d]=actByDoc[a.d]||[]).push(a); });
+
+  var mode="curso", sel=null, q="";
+  var $=function(id){return document.getElementById(id)};
+
+  function slot(day,h){ return day+" "+h; }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function hl(s){
+    if(!q) return esc(s);
+    var i=String(s).toLowerCase().indexOf(q);
+    if(i<0) return esc(s);
+    return esc(String(s).slice(0,i))+"<mark>"+esc(String(s).slice(i,i+q.length))+"</mark>"+esc(String(s).slice(i+q.length));
+  }
+  function match(r){
+    if(!q) return true;
+    return (r.d+" "+r.m+" "+r.a+" "+r.c).toLowerCase().indexOf(q)>=0;
+  }
+
+  function options(){
+    var list = mode==="curso" ? D.cursos : mode==="doc" ? D.docentes : D.aulas;
+    $("sel-lbl").textContent = mode==="curso"?"Curso:":mode==="doc"?"Docente:":"Salón:";
+    var s=$("sel"); s.innerHTML="";
+    if(mode==="aula"){
+      var o=document.createElement("option"); o.value="__all__";
+      o.textContent="Ver todos (ocupación)"; s.appendChild(o);
+    }
+    list.forEach(function(v){
+      var o=document.createElement("option"); o.value=v;
+      o.textContent = mode==="curso" ? v : mode==="aula" ? ("Salón "+v) : v;
+      s.appendChild(o);
+    });
+    if(!sel || list.indexOf(sel)<0) sel = (mode==="aula") ? "__all__" : list[0];
+    s.value=sel;
+  }
+
+  function gridFor(getCell){
+    var h='<div class="gridwrap"><table><thead><tr><th class="hcol">Hora</th>';
+    DAYS.forEach(function(d){ h+='<th>'+DAYNAME[d]+'</th>'; });
+    h+='</tr></thead><tbody>';
+    HOURS.forEach(function(hr){
+      h+='<tr><th class="hcol">'+hr+'<br><span style="font-weight:400;font-size:11px;color:#9AA3B2">'+(HORA[hr]||"")+'</span></th>';
+      DAYS.forEach(function(d){ h+=getCell(slot(d,hr), d, hr); });
+      h+='</tr>';
+      if(hr==="4°"){
+        h+='<tr class="brk"><td colspan="6">Descanso · 9:40–10:00 y 10:00–10:20</td></tr>';
+      }
+    });
+    return h+'</tbody></table></div>';
+  }
+
+  function cell(cls,dayh,inner){
+    return '<td class="'+cls+'" data-h="'+dayh+'">'+(inner?'<div class="cell">'+inner+'</div>':'')+'</td>';
+  }
+
+  function viewCurso(){
+    var recs=byCurso[sel]||[];
+    var map={}; recs.forEach(function(r){ map[r.s]=r; });
+    var gaps=0, n=0;
+    var html=gridFor(function(s,d,hr){
+      var lbl=DAYNAME[d]+" "+hr;
+      var r=map[s];
+      if(!r){ gaps++; return cell("gap",lbl,'<div class="mat">Sin docente</div><div class="doc">Hora sin asignación</div>'); }
+      n++;
+      var isR = REPL.indexOf(r.d)>=0;
+      var dim = match(r)? "" : " style=\"opacity:.32\"";
+      return '<td data-h="'+lbl+'"'+dim+'><div class="cell">'+
+        '<div class="mat">'+hl(r.m)+'</div>'+
+        '<div class="doc"'+(isR?' style="color:var(--blue);font-weight:600"':'')+'>'+hl(r.d)+'</div>'+
+        '<div class="room">Salón '+hl(r.a)+'</div></div></td>';
+    });
+    meta([["Curso",sel],["Horas de clase",n],["Sin docente",gaps],
+          ["Docentes",Object.keys(recs.reduce(function(a,r){a[r.d]=1;return a},{})).length]]);
+    return (gaps? '<p class="note">Este curso tiene '+gaps+' hora(s) sin docente asignado.</p>':'')+html;
+  }
+
+  function viewDoc(){
+    var recs=byDoc[sel]||[];
+    var map={}; recs.forEach(function(r){ map[r.s]=r; });
+    var amap={}; (actByDoc[sel]||[]).forEach(function(a){ amap[a.s]=a; });
+    var n=0;
+    var html=gridFor(function(s,d,hr){
+      var lbl=DAYNAME[d]+" "+hr;
+      var r=map[s];
+      if(r){
+        n++;
+        var dim = match(r)? "" : " style=\"opacity:.32\"";
+        return '<td data-h="'+lbl+'"'+dim+'><div class="cell">'+
+          '<div class="mat">Curso '+hl(r.c)+'</div>'+
+          '<div class="doc">'+hl(r.m)+'</div>'+
+          '<div class="room">Salón '+hl(r.a)+'</div></div></td>';
+      }
+      var a=amap[s];
+      if(a) return cell("act",lbl,'<div class="mat" style="font-size:14.5px">'+esc(a.t)+'</div>');
+      return cell("free",lbl,"");
+    });
+    var cursos=Object.keys(recs.reduce(function(a,r){a[r.c]=1;return a},{}));
+    meta([["Docente",sel],["Horas de clase",n],["Cursos",cursos.length],
+          ["Reemplazo",REPL.indexOf(sel)>=0?"Sí":"No"]]);
+    return html;
+  }
+
+  function viewAulaOne(){
+    var recs=byAula[sel]||[];
+    var map={}; recs.forEach(function(r){ map[r.s]=r; });
+    var n=0;
+    var html=gridFor(function(s,d,hr){
+      var lbl=DAYNAME[d]+" "+hr;
+      var r=map[s];
+      if(!r) return cell("free",lbl,'<div class="doc">Libre</div>');
+      n++;
+      var dim = match(r)? "" : " style=\"opacity:.32\"";
+      return '<td data-h="'+lbl+'"'+dim+'><div class="cell">'+
+        '<div class="mat">Curso '+hl(r.c)+'</div>'+
+        '<div class="doc">'+hl(r.m)+'</div>'+
+        '<div class="room">'+hl(r.d)+'</div></div></td>';
+    });
+    meta([["Salón",sel],["Horas ocupadas",n],["Horas libres",30-n],
+          ["Uso",Math.round(n/30*100)+"%"]]);
+    return html;
+  }
+
+  function viewAulaAll(){
+    var h='<div class="occ"><div class="gridwrap"><table><thead><tr><th class="hcol">Salón</th>';
+    D.slots.forEach(function(s){ h+='<th style="font-size:10px;padding:8px 4px">'+s.replace(" ","<br>")+'</th>'; });
+    h+='</tr></thead><tbody>';
+    var libres=0, total=0;
+    D.aulas.forEach(function(a){
+      var map={}; (byAula[a]||[]).forEach(function(r){ map[r.s]=r; });
+      h+='<tr><th class="hcol">'+esc(a)+'</th>';
+      D.slots.forEach(function(s){
+        total++;
+        var r=map[s];
+        if(!r){ libres++; h+='<td class="libre" data-h="'+s+'"><div class="oc">libre</div></td>'; }
+        else{
+          var dim = match(r)? "" : " style=\"opacity:.3\"";
+          h+='<td class="busy" data-h="'+s+'"'+dim+'><div class="oc"><b>'+hl(r.c)+'</b>'+
+             '<span>'+hl(r.d.split(" ")[0])+'</span></div></td>';
+        }
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div></div>';
+    meta([["Salones",D.aulas.length],["Franjas",30],
+          ["Ocupadas",total-libres],["Libres",libres]]);
+    return '<p class="note">Cada fila es un salón y cada columna una franja. Úsala para ubicar un espacio libre.</p>'+h;
+  }
+
+  function meta(pairs){
+    $("meta").innerHTML = pairs.map(function(p){
+      return '<div><span class="k">'+esc(p[0])+'</span><span class="v">'+esc(p[1])+'</span></div>';
+    }).join("");
+  }
+
+  function render(){
+    options();
+    var out = mode==="curso" ? viewCurso()
+            : mode==="doc"   ? viewDoc()
+            : (sel==="__all__" ? viewAulaAll() : viewAulaOne());
+    $("panel").innerHTML = out || '<p>Sin datos para mostrar.</p>';
+  }
+
+  ["curso","doc","aula"].forEach(function(m){
+    $("t-"+m).addEventListener("click",function(){
+      mode=m; sel=null;
+      document.querySelectorAll('nav button').forEach(function(b){b.setAttribute("aria-selected","false")});
+      this.setAttribute("aria-selected","true");
+      render();
+    });
+  });
+  $("sel").addEventListener("change",function(){ sel=this.value; render(); });
+  $("q").addEventListener("input",function(){ q=this.value.trim().toLowerCase(); render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
