@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Horarios IENC — San Nicolás · Variación</title>
+<style>
+:root{
+  --blue:#2554e0; --blue-dark:#1f46c4;
+  --ink:#20242C; --ink-2:#6B7280; --ink-3:#9AA3B2;
+  --paper:#F3F4F6; --card:#FFFFFF; --line:#E3E6EB;
+  --amber-soft:#FDF0DC; --amber:#8a5a00;
+  --rose-soft:#FBE3E9; --rose:#B12F4E;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.4;
+}
+.wrap{max-width:1220px;margin:0 auto;padding:0 16px 56px}
+
+/* ---------- header ---------- */
+header{background:var(--blue);color:#fff;text-align:center}
+.hd{max-width:1220px;margin:0 auto;padding:26px 16px 0}
+h1{font-weight:800;font-size:clamp(22px,4.6vw,30px);margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:#DCE4FF;font-size:15px;margin:0 0 20px}
+
+/* tabs */
+nav{display:flex;justify-content:center;gap:24px;overflow-x:auto;background:#fff;
+    border-bottom:1px solid var(--line)}
+nav button{
+  appearance:none;border:0;background:none;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:15.5px;color:var(--ink-3);
+  padding:14px 2px 12px;border-bottom:3px solid transparent;white-space:nowrap
+}
+nav button[aria-selected="true"]{color:var(--blue);border-bottom-color:var(--blue)}
+nav button:hover{color:var(--ink)}
+nav button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- picker ---------- */
+.controls{background:#fff;padding:16px 0 6px}
+.picker-label{font-weight:700;font-size:12.5px;color:var(--ink-2);text-transform:uppercase;
+  letter-spacing:.04em;margin:2px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{appearance:none;border:1.5px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:600;font-size:13.5px;padding:7px 15px;border-radius:20px;cursor:pointer}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.grpname{font-weight:700;font-size:12px;color:var(--ink-3);margin:6px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+input[type=search]{
+  font-size:15px;color:var(--ink);background:#fff;border:1.5px solid var(--line);
+  border-radius:10px;padding:8px 12px;width:100%;max-width:320px
+}
+input[type=search]:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+
+/* ---------- grid ---------- */
+.gridwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:14px;
+  border:1px solid var(--line);border-radius:var(--r);background:#fff}
+table{border-collapse:collapse;width:100%}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);vertical-align:top}
+th:last-child,td:last-child{border-right:0}
+tr:last-child td{border-bottom:0}
+thead th{
+  background:#F7F8FA;font-weight:700;font-size:14px;color:var(--ink);
+  padding:9px 8px;text-align:left
+}
+th.hcol{width:56px;background:#F7F8FA;font-weight:700;text-align:left;padding:9px 8px}
+td{padding:0}
+.cell{padding:8px 9px}
+.cell .mat{font-weight:700;font-size:13.5px;color:var(--ink);margin:0 0 2px}
+.cell .doc{color:var(--ink-2);font-size:12px;margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell .room{color:var(--blue);font-weight:600;font-size:12px}
+tr.brk td{background:#F7F8FA;color:var(--ink-3);text-align:center;padding:7px;font-weight:600;font-size:12.5px}
+td.free .cell{color:var(--ink-3)}
+td.free .cell:before{content:"—"}
+td.gap{background:var(--rose-soft)}
+td.gap .mat{color:var(--rose)}
+td.act .cell{background:var(--amber-soft)}
+.repl{color:var(--blue)!important;font-weight:700!important}
+mark{background:#FDE68A;padding:0 2px;border-radius:3px}
+
+/* ---------- meta ---------- */
+.meta{display:flex;gap:22px;flex-wrap:wrap;margin:14px 2px 0}
+.meta div{display:flex;flex-direction:column}
+.meta .k{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.meta .v{font-weight:800;font-size:19px}
+
+.note{background:#eef1ff;border:1px solid #c7d0fb;border-left:4px solid var(--blue);border-radius:8px;
+  padding:12px 14px;margin:14px 0 0;font-size:13.5px;color:#1f2f8a}
+.note.warn{background:var(--amber-soft);border-color:#EBCB96;border-left-color:var(--amber);color:#5C3A00}
+
+/* ---------- general (full matrix) ---------- */
+.dl{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin:14px 0}
+.dl b{font-size:15px}
+.dl span{color:var(--ink-2);font-size:13px;display:block;margin-top:2px}
+.dl a{background:var(--blue);color:#fff;font-weight:700;font-size:14px;text-decoration:none;
+  padding:10px 18px;border-radius:8px;white-space:nowrap}
+.dl a:hover{background:var(--blue-dark)}
+table.gen{min-width:2000px}
+table.gen thead tr.days th{background:var(--blue);color:#fff;font-size:13px;padding:7px}
+table.gen thead tr.hrs th{background:#dfe6fb;color:var(--ink);font-size:11.5px;padding:5px;text-align:center}
+table.gen th.docol{position:sticky;left:0;background:var(--blue);color:#fff;z-index:3;width:150px;padding:9px 10px}
+table.gen tbody th.docol{background:#F7F8FA;color:var(--ink);position:sticky;left:0;z-index:2;border-right:2px solid var(--line)}
+table.gen td{padding:5px 6px;min-width:78px}
+table.gen .mat{font-size:11.5px;margin:0}
+table.gen .doc{font-size:10px;margin:0}
+table.gen .room{font-size:10px}
+table.gen tr.act td{background:var(--amber-soft)}
+
+footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:11.5px;color:var(--ink-3);line-height:1.7}
+
+@media (max-width:760px){
+  .gridwrap:not(.always-scroll) table{table-layout:auto}
+  table:not(.gen),thead:not(.gen thead),tbody:not(.gen tbody){}
+  #panel table:not(.gen),#panel thead,#panel tbody,#panel th,#panel td,#panel tr{display:block}
+  #panel table:not(.gen){min-width:0}
+  #panel thead{display:none}
+  #panel tbody tr{border-bottom:8px solid var(--paper)}
+  #panel th.hcol{background:var(--blue);color:#fff;font-size:12px;text-transform:uppercase;border-right:0;padding:7px 12px}
+  #panel td{border-right:0}
+  #panel td:before{content:attr(data-h);display:block;font-size:10.5px;color:var(--ink-3);font-weight:700;padding:7px 12px 0}
+  #panel td.free{display:none}
+  #panel tr.brk{display:none}
+  .dl{flex-direction:column;align-items:flex-start}
+}
+@media print{header,nav,.controls,footer{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <h1>Horarios IENC — San Nicolás</h1>
+    <p class="sub">Jornada Mañana · Variación por novedad · 2026</p>
+    <nav role="tablist">
+      <button role="tab" id="t-curso" aria-selected="true">Cursos</button>
+      <button role="tab" id="t-doc" aria-selected="false">Docentes</button>
+      <button role="tab" id="t-aula" aria-selected="false">Salones</button>
+      <button role="tab" id="t-gen" aria-selected="false">Horario general</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="controls" id="controls">
+    <p class="picker-label" id="picker-label">Elige un curso</p>
+    <div class="chips" id="chips"></div>
+    <input type="search" id="q" placeholder="Buscar docente, materia o salón dentro de la selección…" autocomplete="off">
+  </div>
+
+  <div class="meta" id="meta"></div>
+  <div id="panel"></div>
+
+  <footer>
+    Reemplazo activo durante la novedad de Sociales: <b>Eliana Díaz</b> y <b>Jimmy Castro</b> (resaltados en azul).<br>
+    Este horario es independiente del habitual; al finalizar la novedad se vuelve a la versión anterior.
+  </footer>
+</div>
+
+<script src="horarios-data-v2.js"></script>
+<script>
+(function(){
+  var D = window.HORARIO_V2;
+  var REPL = ["Eliana Diaz","Jimmy Castro"];
+  var DAYS = ["Lun","Mar","Mié","Jue","Vie"];
+  var DAYNAME = {Lun:"Lunes",Mar:"Martes","Mié":"Miércoles",Jue:"Jueves",Vie:"Viernes"};
+  var HOURS = ["1°","2°","3°","4°","5°","6°"];
+  var HORA = {"1°":"6:00–6:55","2°":"6:55–7:50","3°":"7:50–8:45","4°":"8:45–9:40",
+              "5°":"10:20–11:10","6°":"11:10–12:00"};
+
+  var byCurso={}, byDoc={}, byAula={};
+  D.recs.forEach(function(r){
+    (byCurso[r.c]=byCurso[r.c]||[]).push(r);
+    (byDoc[r.d]=byDoc[r.d]||[]).push(r);
+    (byAula[r.a]=byAula[r.a]||[]).push(r);
+  });
+  var actByDoc={};
+  D.acts.forEach(function(a){ (actByDoc[a.d]=actByDoc[a.d]||[]).push(a); });
+
+  var mode="curso", sel=null, q="";
+  var $=function(id){return document.getElementById(id)};
+
+  function slot(day,h){ return day+" "+h; }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function hl(s){
+    if(!q) return esc(s);
+    var i=String(s).toLowerCase().indexOf(q);
+    if(i<0) return esc(s);
+    return esc(String(s).slice(0,i))+"<mark>"+esc(String(s).slice(i,i+q.length))+"</mark>"+esc(String(s).slice(i+q.length));
+  }
+  function match(r){
+    if(!q) return true;
+    return (r.d+" "+r.m+" "+r.a+" "+r.c).toLowerCase().indexOf(q)>=0;
+  }
+
+  function gradeOf(c){ return c.length<=3 ? c[0]+"°" : c.slice(0,2)+"°"; }
+
+  function chipsForCursos(){
+    var byGrade={};
+    D.cursos.forEach(function(c){ (byGrade[gradeOf(c)]=byGrade[gradeOf(c)]||[]).push(c); });
+    var grades=Object.keys(byGrade).sort();
+    var h="";
+    grades.forEach(function(g){
+      h+='<div class="grpname">'+g+'</div><div class="chips" style="margin-top:0;margin-bottom:10px">';
+      byGrade[g].forEach(function(c){
+        h+='<button class="chip" data-v="'+c+'" aria-pressed="'+(c===sel)+'">'+c+'</button>';
+      });
+      h+='</div>';
+    });
+    return h;
+  }
+  function chipsForList(list, showReplFirst){
+    var arr=list.slice();
+    if(showReplFirst){
+      arr.sort(function(a,b){
+        var ra=REPL.indexOf(a)>=0, rb=REPL.indexOf(b)>=0;
+        if(ra&&!rb) return -1; if(rb&&!ra) return 1;
+        return a.localeCompare(b,'es');
+      });
+    }
+    var h='<div class="chips">';
+    arr.forEach(function(v){
+      var isR = REPL.indexOf(v)>=0;
+      h+='<button class="chip" data-v="'+esc(v)+'" aria-pressed="'+(v===sel)+'"'+(isR?' style="border-color:#2554e0;color:#2554e0"':'')+'>'+esc(v)+(isR?' ★':'')+'</button>';
+    });
+    return h+'</div>';
+  }
+
+  function renderChips(){
+    var box=$("chips");
+    if(mode==="curso"){
+      $("picker-label").textContent="Elige un curso";
+      box.innerHTML = chipsForCursos();
+    } else if(mode==="doc"){
+      $("picker-label").textContent="Elige un docente  (★ = reemplazo de esta novedad)";
+      box.innerHTML = chipsForList(D.docentes, true);
+    } else if(mode==="aula"){
+      $("picker-label").textContent="Elige un salón";
+      var arr=D.aulas.slice();
+      var h='<div class="chips">';
+      h+='<button class="chip" data-v="__all__" aria-pressed="'+(sel==="__all__")+'">Ver todos (ocupación)</button>';
+      arr.forEach(function(v){
+        h+='<button class="chip" data-v="'+esc(v)+'" aria-pressed="'+(v===sel)+'">'+esc(v)+'</button>';
+      });
+      box.innerHTML = h+'</div>';
+    }
+    box.querySelectorAll(".chip").forEach(function(b){
+      b.addEventListener("click", function(){ sel=b.getAttribute("data-v"); render(); });
+    });
+  }
+
+  function gridFor(getCell){
+    var h='<div class="gridwrap"><table><thead><tr><th class="hcol">Hora</th>';
+    DAYS.forEach(function(d){ h+='<th>'+DAYNAME[d]+'</th>'; });
+    h+='</tr></thead><tbody>';
+    HOURS.forEach(function(hr){
+      h+='<tr><th class="hcol">'+hr+'<br><span style="font-weight:400;font-size:10.5px;color:#9AA3B2">'+(HORA[hr]||"")+'</span></th>';
+      DAYS.forEach(function(d){ h+=getCell(slot(d,hr), d, hr); });
+      h+='</tr>';
+      if(hr==="4°"){
+        h+='<tr class="brk"><td colspan="6">Descanso · 9:40–10:00 y 10:00–10:20</td></tr>';
+      }
+    });
+    return h+'</tbody></table></div>';
+  }
+  function cell(cls,dayh,inner){
+    return '<td class="'+cls+'" data-h="'+dayh+'">'+(inner?'<div class="cell">'+inner+'</div>':'')+'</td>';
+  }
+
+  function viewCurso(){
+    if(!sel) return "";
+    var recs=byCurso[sel]||[];
+    var map={}; recs.forEach(function(r){ map[r.s]=r; });
+    var gaps=0, n=0;
+    var html=gridFor(function(s,d,hr){
+      var lbl=DAYNAME[d]+" "+hr;
+      var r=map[s];
+      if(!r){ gaps++; return cell("gap",lbl,'<div class="mat">Sin docente</div>'); }
+      n++;
+      var isR = REPL.indexOf(r.d)>=0;
+      var dim = match(r)? "" : " style=\"opacity:.3\"";
+      return '<td data-h="'+lbl+'"'+dim+'><div class="cell">'+
+        '<div class="mat">'+hl(r.m)+'</div>'+
+        '<div class="doc'+(isR?' repl':'')+'">'+hl(r.d)+'</div>'+
+        '<div class="room">Salón '+hl(r.a)+'</div></div></td>';
+    });
+    meta([["Curso",sel],["Horas de clase",n],["Sin docente",gaps],
+          ["Docentes",Object.keys(recs.reduce(function(a,r){a[r.d]=1;return a},{})).length]]);
+    return (gaps? '<p class="note warn">Este curso tiene '+gaps+' hora(s) sin docente asignado.</p>':'')+html;
+  }
+
+  function viewDoc(){
+    if(!sel) return "";
+    var recs=byDoc[sel]||[];
+    var map={}; recs.forEach(function(r){ map[r.s]=r; });
+    var amap={}; (actByDoc[sel]||[]).forEach(function(a){ amap[a.s]=a; });
+    var n=0;
+    var html=gridFor(function(s,d,hr){
+      var lbl=DAYNAME[d]+" "+hr;
+      var r=map[s];
+      if(r){
+        n++;
+        var dim = match(r)? "" : " style=\"opacity:.3\"";
+        return '<td data-h="'+lbl+'"'+dim+'><div class="cell">'+
+          '<div class="mat">Curso '+hl(r.c)+'</div>'+
+          '<div class="doc">'+hl(r.m)+'</div>'+
+          '<div class="room">Salón '+hl(r.a)+'</div></div></td>';
+      }
+      var a=amap[s];
+      if(a) return cell("act",lbl,'<div class="mat" style="font-size:13px">'+esc(a.t)+'</div>');
+      return cell("free",lbl,"");
+    });
+    var cursos=Object.keys(recs.reduce(function(a,r){a[r.c]=1;return a},{}));
+    meta([["Docente",sel],["Horas de clase",n],["Cursos",cursos.length],
+          ["Reemplazo",REPL.indexOf(sel)>=0?"Sí":"No"]]);
+    return (REPL.indexOf(sel)>=0 ? '<p class="note">Docente de reemplazo durante la novedad de Sociales.</p>' : '') + html;
+  }
+
+  function viewAulaOne(){
+    var recs=byAula[sel]||[];
+    var map={}; recs.forEach(function(r){ map[r.s]=r; });
+    var n=0;
+    var html=gridFor(function(s,d,hr){
+      var lbl=DAYNAME[d]+" "+hr;
+      var r=map[s];
+      if(!r) return cell("free",lbl,'<div class="doc">Libre</div>');
+      n++;
+      var dim = match(r)? "" : " style=\"opacity:.3\"";
+      return '<td data-h="'+lbl+'"'+dim+'><div class="cell">'+
+        '<div class="mat">Curso '+hl(r.c)+'</div>'+
+        '<div class="doc">'+hl(r.m)+'</div>'+
+        '<div class="room">'+hl(r.d)+'</div></div></td>';
+    });
+    meta([["Salón",sel],["Horas ocupadas",n],["Horas libres",30-n],
+          ["Uso",Math.round(n/30*100)+"%"]]);
+    return html;
+  }
+
+  function viewAulaAll(){
+    var h='<div class="gridwrap always-scroll"><table class="gen" style="min-width:900px"><thead><tr class="days"><th class="hcol docol">Salón</th>';
+    D.slots.forEach(function(s){ h+='<th style="font-size:10px;padding:6px 3px">'+s.replace(" ","<br>")+'</th>'; });
+    h+='</tr></thead><tbody>';
+    var libres=0, total=0;
+    D.aulas.forEach(function(a){
+      var map={}; (byAula[a]||[]).forEach(function(r){ map[r.s]=r; });
+      h+='<tr><th class="hcol docol" style="position:static">'+esc(a)+'</th>';
+      D.slots.forEach(function(s){
+        total++;
+        var r=map[s];
+        if(!r){ libres++; h+='<td class="free" data-h="'+s+'"><div class="cell"></div></td>'; }
+        else{
+          var dim = match(r)? "" : " style=\"opacity:.3\"";
+          h+='<td data-h="'+s+'"'+dim+'><div class="cell"><div class="mat">'+hl(r.c)+'</div>'+
+             '<div class="doc">'+hl(r.d.split(" ")[0])+'</div></div></td>';
+        }
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    meta([["Salones",D.aulas.length],["Franjas",30],["Ocupadas",total-libres],["Libres",libres]]);
+    return '<p class="note">Cada fila es un salón y cada columna una franja. Toca un salón arriba para verlo en su propia cuadrícula.</p>'+h;
+  }
+
+  function viewGeneral(){
+    var h='<div class="dl"><div><b>📄 Excel completo</b><span>horarios_variacion_LINA_v2.xlsx · 508 clases · 27 docentes · 17 cursos</span></div>'+
+      '<a href="horarios_variacion_LINA_v2.xlsx" download>Descargar Excel</a></div>';
+    h+='<div class="gridwrap always-scroll"><table class="gen"><thead>';
+    h+='<tr class="days"><th class="hcol docol" rowspan="2">Docente</th>';
+    DAYS.forEach(function(d){ h+='<th colspan="6">'+DAYNAME[d]+'</th>'; });
+    h+='</tr><tr class="hrs">';
+    DAYS.forEach(function(){ HOURS.forEach(function(hr){ h+='<th>'+hr+'</th>'; }); });
+    h+='</tr></thead><tbody>';
+    D.docentes.forEach(function(doc){
+      var map={}; (byDoc[doc]||[]).forEach(function(r){ map[r.s]=r; });
+      var amap={}; (actByDoc[doc]||[]).forEach(function(a){ amap[a.s]=a; });
+      var isR=REPL.indexOf(doc)>=0;
+      h+='<tr><th class="hcol docol"'+(isR?' style="color:#2554e0"':'')+'>'+esc(doc)+(isR?' ★':'')+'</th>';
+      DAYS.forEach(function(d){ HOURS.forEach(function(hr){
+        var s=slot(d,hr); var r=map[s];
+        if(r){ h+='<td><div class="cell"><p class="mat">'+esc(r.c)+'</p><p class="doc">'+esc(r.m)+'</p><p class="room">'+esc(r.a)+'</p></div></td>'; return; }
+        var a=amap[s];
+        if(a){ h+='<td style="background:#FDF0DC"><div class="cell"><p class="mat" style="font-size:10.5px">'+esc(a.t)+'</p></div></td>'; return; }
+        h+='<td><div class="cell"></div></td>';
+      });});
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    meta([["Docentes",D.docentes.length],["Clases",D.recs.length],["Cursos",D.cursos.length],["Salones",D.aulas.length]]);
+    return h;
+  }
+
+  function meta(pairs){
+    $("meta").innerHTML = pairs.map(function(p){
+      return '<div><span class="k">'+esc(p[0])+'</span><span class="v">'+esc(p[1])+'</span></div>';
+    }).join("");
+  }
+
+  function render(){
+    if(mode==="gen"){
+      $("controls").style.display="none";
+      $("meta").innerHTML=""; // set inside viewGeneral
+      $("panel").innerHTML = viewGeneral();
+      return;
+    }
+    $("controls").style.display="block";
+    renderChips();
+    var out;
+    if(mode==="curso") out = sel ? viewCurso() : '<p class="note">Elige un curso arriba para ver su horario completo.</p>';
+    else if(mode==="doc") out = sel ? viewDoc() : '<p class="note">Elige un docente arriba para ver su horario completo.</p>';
+    else out = (sel==="__all__" || !sel) ? viewAulaAll() : viewAulaOne();
+    $("panel").innerHTML = out;
+  }
+
+  ["curso","doc","aula","gen"].forEach(function(m){
+    $("t-"+m).addEventListener("click",function(){
+      mode=m; sel = (m==="aula") ? "__all__" : null;
+      document.querySelectorAll('nav button').forEach(function(b){b.setAttribute("aria-selected","false")});
+      this.setAttribute("aria-selected","true");
+      render();
+    });
+  });
+  $("q").addEventListener("input",function(){ q=this.value.trim().toLowerCase(); render(); });
+
+  sel = D.cursos[0];
+  render();
+})();
+</script>
+</body>
+</html>
